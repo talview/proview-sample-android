@@ -16,5 +16,11 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Decode TALVIEW_PROVIEW_TOKEN
+        run: echo TALVIEW_PROVIEW_TOKEN="FAKETOKEN" > ./local.properties
+
+      - name: Clean
+        run: ./gradlew clean
+
       - name: Build
-        run: ./gradlew assemble --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
