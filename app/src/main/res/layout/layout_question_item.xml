@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvQuestion"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="24dp"
+        tool:layout_constraintBottom_toBottomOf="@+id/tvLabelQuestion"
+        tool:layout_constraintEnd_toEndOf="parent"
+        tool:layout_constraintStart_toEndOf="@+id/tvLabelQuestion"
+        tool:layout_constraintTop_toTopOf="@+id/tvLabelQuestion"
+        tools:text="Which is your favorite movie?" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvLabelQuestion"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/question"
+        android:textColor="@android:color/holo_blue_light"
+        tool:layout_constraintStart_toStartOf="parent"
+        tool:layout_constraintTop_toTopOf="parent" />
+
+    <com.talview.android.sdk.proview.view.monitoring.ProviewMonitoringEditText
+        android:id="@+id/proviewAnswerEditText"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="start"
+        android:inputType="textMultiLine"
+        android:hint="@string/write_your_answer_here"
+        tool:layout_constraintEnd_toEndOf="@+id/tvQuestion"
+        tool:layout_constraintStart_toStartOf="@+id/tvLabelQuestion"
+        tool:layout_constraintTop_toBottomOf="@+id/tvQuestion" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSubmitAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/submit_answer"
+        tool:layout_constraintBottom_toBottomOf="parent"
+        tool:layout_constraintEnd_toEndOf="@+id/proviewAnswerEditText"
+        tool:layout_constraintStart_toStartOf="@+id/proviewAnswerEditText"
+        tool:layout_constraintTop_toBottomOf="@+id/proviewAnswerEditText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
