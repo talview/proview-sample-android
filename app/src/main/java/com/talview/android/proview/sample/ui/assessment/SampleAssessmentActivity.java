@@ -27,6 +27,10 @@ import com.talview.android.sdk.proview.view.ProctorCameraView;
 import com.talview.android.sdk.proview.view.listeners.ProctorSessionListener;
 import com.talview.android.sdk.proview.view.listeners.ProctorVideoUploadListener;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+
 public class SampleAssessmentActivity extends AppCompatActivity implements QuestionAdapter.QuestionSubmitListener {
 
     ProctorCameraView proctorCameraView;
@@ -71,13 +75,13 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
                 Constants.ASSESSMENT_TITLE,
                 new PreFlightInitializeCallback() {
                     @Override
-                    public void onPreFlightInitialized(String sessionId) {
+                    public void onPreFlightInitialized(@NotNull String sessionId) {
                         // Save this unique sessionID for this user.
                         startTestWithProviewPreflight();
                     }
 
                     @Override
-                    public void onError(String errorMessage) {
+                    public void onError(@NotNull String errorMessage) {
                         //Exiting the activity on error.
                         Toast.makeText(SampleAssessmentActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         finish();
@@ -98,7 +102,7 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
             }
 
             @Override
-            public void onPreFlightFailure(String errorMessage) {
+            public void onPreFlightFailure(@NotNull String errorMessage) {
                 //Exiting the activity on error.
                 Toast.makeText(SampleAssessmentActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 finish();
@@ -140,7 +144,7 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(@NotNull String message) {
                 Toast.makeText(SampleAssessmentActivity.this, message, Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -149,22 +153,22 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
         proctorCameraView.setProctorVideoListener(new ProctorVideoUploadListener() {
             @Override
             public void onProctorUploadSuccess() {
-                Toast.makeText(SampleAssessmentActivity.this, "All videos uploaded successfully and test completed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SampleAssessmentActivity.this, R.string.video_upload_success_message, Toast.LENGTH_SHORT).show();
                 finish();
             }
 
             @Override
             public void uploadProgress(int progress) {
-                //TODO need to remove runOnUiThread.
+                //TODO: need to remove runOnUiThread.
                 runOnUiThread(() -> {
                     uploadPercentageTextView.setVisibility(View.VISIBLE);
-                    uploadPercentageTextView.setText("Uploading " + progress + "%");
+                    uploadPercentageTextView.setText(String.format(Locale.ENGLISH, "%s%d%%", getString(R.string.uploading), progress));
                 });
             }
 
             @Override
             public void uploadStarted() {
-
+                // Empty method
             }
         });
     }
@@ -177,19 +181,27 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
         proctorCameraView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Assessment Question Answer Submit Callback
+     * checks for last Question or End of Assessment to stop {@link ProctorCameraView} session and
+     * Show proctored video upload progress
+     */
     @Override
     public void onAnswerSubmit(Question question, boolean isLastQuestion, int position) {
         if (isLastQuestion) {
-            // stop session
+            // Stop session
             proctorCameraView.stopSession();
 
-            //Show uploading progress.
+            // Show uploading progress
             showUploadProgressScreen();
         } else {
             questionRecyclerView.getLayoutManager().scrollToPosition(position + 1);
         }
     }
 
+    /**
+     * Show proctored video upload progress status
+     */
     public void showUploadProgressScreen() {
         progressBar.setVisibility(View.GONE);
         questionRecyclerView.setVisibility(View.GONE);
@@ -210,14 +222,14 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Exit")
-                .setMessage("Do you really want to exit demo assessment?")
-                .setPositiveButton("OK", (dialog, which) -> {
+                .setTitle(getString(R.string.exit))
+                .setMessage(getString(R.string.exit_message))
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
                     // stop session
                     proctorCameraView.stopSession();
                     finish();
                 })
-                .setNegativeButton("Cancel", ((dialog, which) -> {
+                .setNegativeButton(getString(R.string.cancel), ((dialog, which) -> {
                     dialog.cancel();
                 })).show();
     }
