@@ -22,22 +22,16 @@ proviewToken=YOUR_PROVIEW_TOEKN
 ## Integrate Proview-Android-SDK in your Android application
 * Switch to project view in android studio 
 * Copy [proview-android-sdk.aar](/app/libs/proview-android-sdk.aar) from `/app/libs` and paste it to your app module libs folder.
-* Update [build.gradle(Project: project-name)](build.gradle) 
-```
+* Update [build.gradle]((build.gradle))(Project: project-name)
+```gradle
 buildscript {
     repositories {
         google()
         jcenter()
-        maven {
-            url "https://maven.fabric.io/public"
-        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:3.5.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
-        classpath "com.google.gms:google-services:4.3.3"
-        classpath "com.google.firebase:perf-plugin:1.3.1"
-        classpath "io.fabric.tools:gradle:1.31.2"
     }
 }
 
@@ -45,272 +39,267 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://maven.fabric.io/public" }
         maven { url "https://jitpack.io" }
-        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
         flatDir {
             dir 'libs'
         }
     }
 }
 ```
-* Update [build.gradle(Module: module-name)](/app/build.gradle)<br>
-Read local.properties file
-```
-def localProperties = new Properties()
-localProperties.load(new FileInputStream(rootProject.file("local.properties")))
-```
-Update default config
-```
-defaultConfig{
-    minSdkVersion 21
-    targetSdkVersion 29
-    ...
-    vectorDrawables.useSupportLibrary = true
-}
-```
-Add compile options
-```
-compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-}
-```
-Inorder to access Proview Token, Add `debug` build type
-```
-android {
-    .....
-    buildTypes {
-        debug {
-            resValue("string", "talview_proview_token", localProperties['proviewToken'])
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+* Update [build.gradle](/app/build.gradle)(Module: module-name)
+    * Update default config
+    ```gradle
+    defaultConfig{
+        minSdkVersion 21
+        targetSdkVersion 29
+        ...
+        vectorDrawables.useSupportLibrary = true
     }
-}
-
-In order to use proviewToken value inside the application, we can try extracting the value like 
-resources.getString(R.string.talview_proview_token)
-```
-or
-```
-If we wish to store the value in the BuildConfig.java file
-
-android {
-    .....
-    buildTypes {
-        debug {
-            buildConfigField("String", "TALVIEW_PROVIEW_TOKEN", "\"" + localProperties['proviewToken'] + "\"")
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+    ```
+    * Add compile options
+    ```gradle
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-}
-
-rebuild the project and then we can access TALVIEW_PROVIEW_TOKEN anywhere in the code like
-BuildConfig.TALVIEW_PROVIEW_TOKEN
-```
-Add required dependencies for Proview-Android-SDK  
-```
-dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    // proview-android-sdk
-    implementation(name: 'proview-android-sdk', ext: 'aar')
-    // proview-android-sdk dependencies
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
-    implementation 'androidx.core:core-ktx:1.3.0'
-    implementation 'androidx.fragment:fragment-ktx:1.2.2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
-    implementation 'com.google.android.material:material:1.1.0-beta01'
-    implementation 'com.github.xujiaji:happy-bubble:1.1.7'
-    implementation 'com.shuhart.stepview:stepview:1.5.1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-beta01'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0-beta01'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-beta01'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-beta01'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0-beta01'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-beta01'
-    implementation 'androidx.room:room-rxjava2:2.2.0'
-    implementation 'androidx.room:room-runtime:2.2.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
-    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.2.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.2.1'
-    implementation 'com.squareup.okio:okio:2.2.2'
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.commonsware.cwac:saferoom.x:1.2.1'
-    implementation 'joda-time:joda-time:2.8.2'
-    implementation 'org.permissionsdispatcher:permissionsdispatcher:4.5.0'
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation 'com.facebook.stetho:stetho:1.5.1'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
-    implementation 'androidx.camera:camera-core:1.0.0-alpha05'
-    implementation 'androidx.camera:camera-camera2:1.0.0-alpha05'
-    implementation 'com.google.firebase:firebase-ml-common:22.1.1'
-    implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
-    implementation 'com.google.firebase:firebase-ml-vision-face-model:20.0.1'
-}
-```
+    ```
+    * Add required dependencies for Proview-Android-SDK  
+    ```gradle
+    dependencies {
+        implementation fileTree(dir: "libs", include: ["*.jar"])
+        // proview-android-sdk
+        implementation(name: 'proview-android-sdk', ext: 'aar')
+        // proview-android-sdk dependencies
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
+        implementation 'androidx.core:core-ktx:1.3.0'
+        implementation 'androidx.fragment:fragment-ktx:1.2.2'
+        implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+        implementation 'androidx.annotation:annotation:1.1.0'
+        implementation 'androidx.appcompat:appcompat:1.1.0'
+        implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+        implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
+        implementation 'com.google.android.material:material:1.1.0-beta01'
+        implementation 'com.github.xujiaji:happy-bubble:1.1.7'
+        implementation 'com.shuhart.stepview:stepview:1.5.1'
+        implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-beta01'
+        implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0-beta01'
+        implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-beta01'
+        implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-beta01'
+        implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0-beta01'
+        implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-beta01'
+        implementation 'androidx.room:room-rxjava2:2.2.0'
+        implementation 'androidx.room:room-runtime:2.2.0'
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+        implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
+        implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
+        implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+        implementation 'com.github.bumptech.glide:glide:4.9.0'
+        implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+        implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
+        implementation 'com.squareup.okhttp3:okhttp:4.2.1'
+        implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+        implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.2.1'
+        implementation 'com.squareup.okio:okio:2.2.2'
+        implementation 'com.google.code.gson:gson:2.8.2'
+        implementation 'com.commonsware.cwac:saferoom.x:1.2.1'
+        implementation 'joda-time:joda-time:2.8.2'
+        implementation 'org.permissionsdispatcher:permissionsdispatcher:4.5.0'
+        implementation 'com.jakewharton.timber:timber:4.7.1'
+        implementation 'com.facebook.stetho:stetho:1.5.1'
+        implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+        implementation 'androidx.camera:camera-core:1.0.0-alpha05'
+        implementation 'androidx.camera:camera-camera2:1.0.0-alpha05'
+        implementation 'com.google.firebase:firebase-ml-common:22.1.1'
+        implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
+        implementation 'com.google.firebase:firebase-ml-vision-face-model:20.0.1'
+    }
+    ```
 * Update your [AndroidManifest.xml](app/src/main/AndroidManifest.xml)
-Add uses-feature required for proview-android-sdk
-```
-<uses-feature android:name="android.hardware.camera" />
-<uses-feature android:name="android.hardware.camera.autofocus" />
-```
-Add permissions required for proview-android-sdk
-```
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.CALL_PHONE" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-```
-* Create a your application class and extends android.app.Application like [SampleApplication](app/src/main/java/com/talview/android/proview/sample/SampleApplication.java)
-```
+    * Add uses-feature required for `proview-android-sdk`
+    ```xml
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.talview.android.proview.sample">
+    
+        <uses-feature android:name="android.hardware.camera" />
+        <uses-feature android:name="android.hardware.camera.autofocus" />
+    
+    </manifest>
+    ```
+    * Add permissions required for `proview-android-sdk`
+    ```xml
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.talview.android.proview.sample">
+    
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />
+        <uses-permission android:name="android.permission.CALL_PHONE" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.CAMERA" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    
+    </manifest>
+    ```
+* Create your application class and extends android.app.Application like [SampleApplication](app/src/main/java/com/talview/android/proview/sample/SampleApplication.java)
+```java
 public class SampleApplication extends Application {
 }
 ```
-Override onCreate() method and initialize Proview
-```
-@Override
-public void onCreate() {
-    super.onCreate();
-    Proview.init(this);
+* Override onCreate() method and initialize Proview
+```java
+public class SampleApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Proview.init(this);
+    }
 }
 ``` 
-* Add name attribute and allowBackup attribute to your AndroidManifest.xml file `<application>` tag
-```
+* Register your Application class to your AndroidManifest.xml file in `<application>` tag
+```xml
 <application
-    android:name=".SampleApplication"
-    android:allowBackup="false"
+    android:name=".SampleApplication">
     .......
 </application>
 ``` 
+* Override the `proview-android-sdk` color configuration to apply your app theme
+```xml
+<resources>
+    <color name="proviewColorPrimary">@color/colorPrimary</color>
+    <color name="proviewColorPrimaryDark">@color/colorPrimaryDark</color>
+    <color name="proviewColorSecondary">#5990cc</color>
+    <color name="proviewColorSecondaryLight">#265990cc</color>
+</resources>
+```
 * Checkout [SampleAssessmentActivity](app/src/main/java/com/talview/android/proview/sample/ui/assessment/SampleAssessmentActivity.java) to start proctoring for your assessment
     * Step 1: Create `Activity/Fragment` or if you have an `Activity/Fragment` for your assessment goto Step 2
     * Step 2: Replace your Answer Section EditText to `ProviewMonitoringEditText` [see an example here](app/src/main/res/layout/layout_question_item.xml)
     * Step 3: Add `ProctorCameraView` to your assessment host `Activity/Fragment` [see an example here](app/src/main/res/layout/activity_sample_assessment.xml)
     * Step 4: Initialize `proctorCameraView` in your UI component initialization 
-    * Step 5: Proview `initializePreFlight` with mandatory parameters like proviewToken (Talview Proview Token), candidateId (for candidate profile), externalId(for uniques session) and assessmentTitle (refers to proview assessment title)
+    ```java
+    public class SampleAssessmentActivity extends AppCompatActivity {  
+      @Override
+      protected void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.activity_sample_assessment);
+    
+          proctorCameraView = findViewById(R.id.proctorCameraView);
+      }
+    }
     ```
-    Proview.get().initializePreFlight(
-        BuildConfig.TALVIEW_PROVIEW_TOKEN,
-        Constants.CANDIDATE_ID,
-        Constants.EXTERNAL_ID,
-        Constants.ASSESSMENT_TITLE,
-        new PreFlightInitializeCallback() {
+    * Step 5: Proview `initializePreFlight` with mandatory parameters like proviewToken (Talview Proview Token), candidateId (for candidate profile), externalId(for uniques session) and assessmentTitle (refers to proview assessment title) 
+        * Start PreFlight for checking candidate hw check on `onPreFlightInitialized` callback
+        * Start your assessment and start proctoring also set proctoring upload listeners `ProctorSessionListener`
+        * Stop proctoring session once your assessment ends `proctorCameraView.stopSession();`
+    ```java
+    public class SampleAssessmentActivity extends AppCompatActivity {  
+      @Override
+      protected void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.activity_sample_assessment);
+    
+          initializeProview();
+      }
+      private void initializeProview() {
+          Proview.get().initializePreFlight(
+              /*TALVIEW_PROVIEW_TOKEN*/ "PROVIEW_TOKEN",
+              /*CANDIDATE_ID*/ 1001,
+              /*EXTERNAL_ID*/ 9001,
+              /*ASSESSMENT_TITLE*/ "Sample Proctor Assessment",
+              new PreFlightInitializeCallback() {
+                  @Override
+                  public void onPreFlightInitialized(@NotNull String sessionId) {
+                      // Save this unique sessionID for this user.
+                      startTestWithProviewPreflight();
+                  }
+      
+                  @Override
+                  public void onError(@NotNull String errorMessage) {
+                      //Exiting the activity on error.
+                      Toast.makeText(SampleAssessmentActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                      finish();
+                  }
+              }
+           );
+      }
+      
+      private void startTestWithProviewPreflight() {
+          Proview.get().startPreflight(this, new PreFlightCallback() {
+              @Override
+              public void onPreFlightComplete() {
+                  //Start proctoring and start your assessment.
+                  startYourAssessment();
+              }
+    
+              @Override
+              public void onPreFlightFailure(@NotNull String errorMessage) {
+                  //Exiting the activity on error.
+                  Toast.makeText(SampleAssessmentActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                  finish();
+              }
+    
+              @Override
+              public void onPreFlightCancelled() {
+                  //Exiting the activity on preFlightCancelled.
+                  Toast.makeText(SampleAssessmentActivity.this, "Pre Flight cancelled", Toast.LENGTH_SHORT).show();
+                  finish();
+              }
+          });
+      }
+      
+      private void startYourAssessment() {
+        showQuestions();
+        setListenersForProctoring();
+        proctorCameraView.startSession(this);
+        proctorCameraView.startProctoring();
+      }
+    
+      private void setListenersForProctoring() {
+        proctorCameraView.initializeSession(new ProctorSessionListener() {
             @Override
-            public void onPreFlightInitialized(@NotNull String sessionId) {
-                // Save this unique sessionID for this user.
-                startTestWithProviewPreflight();
+            public void onProctorSessionStart() {
+                Toast.makeText(SampleAssessmentActivity.this, "Session Started", Toast.LENGTH_SHORT).show();
             }
-
+    
             @Override
-            public void onError(@NotNull String errorMessage) {
-                //Exiting the activity on error.
-                Toast.makeText(SampleAssessmentActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+            public void onProctorSessionStop() {
+                Toast.makeText(SampleAssessmentActivity.this, "Session Stopped", Toast.LENGTH_SHORT).show();
+            }
+    
+            @Override
+            public void onError(@NotNull String message) {
+                Toast.makeText(SampleAssessmentActivity.this, message, Toast.LENGTH_SHORT).show();
                 finish();
             }
-        }
-    );
+        });
+    
+        proctorCameraView.setProctorVideoListener(new ProctorVideoUploadListener() {
+            @Override
+            public void onProctorUploadSuccess() {
+                Toast.makeText(SampleAssessmentActivity.this, R.string.video_upload_success_message, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+    
+            @Override
+            public void uploadProgress(int progress) {
+                runOnUiThread(() -> {
+                    uploadPercentageTextView.setVisibility(View.VISIBLE);
+                    uploadPercentageTextView.setText(String.format(Locale.ENGLISH, "%s%d%%", getString(R.string.uploading), progress));
+                });
+            }
+    
+            @Override
+            public void uploadStarted() {
+                // Empty method
+            }
+        });
+    }
+    }
     ```
-  * Step 6: Start PreFlight for checking candidate hw check on `onPreFlightInitialized` callback of Step 5
-  ```
-  Proview.get().startPreflight(this, new PreFlightCallback() {
-      @Override
-      public void onPreFlightComplete() {
-          //Start proctoring and start your assessment.
-          startYourAssessment();
-      }
-
-      @Override
-      public void onPreFlightFailure(@NotNull String errorMessage) {
-          //Exiting the activity on error.
-          Toast.makeText(SampleAssessmentActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-          finish();
-      }
-
-      @Override
-      public void onPreFlightCancelled() {
-          //Exiting the activity on preFlightCancelled.
-          Toast.makeText(SampleAssessmentActivity.this, "Pre Flight cancelled", Toast.LENGTH_SHORT).show();
-          finish();
-      }
-  });
-  ```
-  * Step 7: Start your assessment and start proctoring also set proctoring upload listeners `ProctorSessionListener`
-  ```
-  private void startYourAssessment() {
-      showQuestions();
-      setListenersForProctoring();
-      proctorCameraView.startSession(this);
-      proctorCameraView.startProctoring();
-  }
   
-  private void setListenersForProctoring() {
-      proctorCameraView.initializeSession(new ProctorSessionListener() {
-          @Override
-          public void onProctorSessionStart() {
-              Toast.makeText(SampleAssessmentActivity.this, "Session Started", Toast.LENGTH_SHORT).show();
-          }
-
-          @Override
-          public void onProctorSessionStop() {
-              Toast.makeText(SampleAssessmentActivity.this, "Session Stopped", Toast.LENGTH_SHORT).show();
-          }
-
-          @Override
-          public void onError(@NotNull String message) {
-              Toast.makeText(SampleAssessmentActivity.this, message, Toast.LENGTH_SHORT).show();
-              finish();
-          }
-      });
-
-      proctorCameraView.setProctorVideoListener(new ProctorVideoUploadListener() {
-          @Override
-          public void onProctorUploadSuccess() {
-              Toast.makeText(SampleAssessmentActivity.this, R.string.video_upload_success_message, Toast.LENGTH_SHORT).show();
-              finish();
-          }
-
-          @Override
-          public void uploadProgress(int progress) {
-              runOnUiThread(() -> {
-                  uploadPercentageTextView.setVisibility(View.VISIBLE);
-                  uploadPercentageTextView.setText(String.format(Locale.ENGLISH, "%s%d%%", getString(R.string.uploading), progress));
-              });
-          }
-
-          @Override
-          public void uploadStarted() {
-              // Empty method
-          }
-      });
-  }
-  ```
-  * Step 8: Stop proctoring session once your assessment ends.
-  ```
-  proctorCameraView.stopSession();
-  ```
-
 ## Proview-Android-SDK API Reference for this project
 Proview Android SDK is a proctoring sdk.
 
@@ -324,10 +313,7 @@ Proview Android SDK is a proctoring sdk.
 <com.talview.android.sdk.proview.view.ProctorCameraView
     android:id="@+id/proctorCameraView"
     android:layout_width="70dp"
-    android:layout_height="70dp"
-    android:visibility="gone"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+    android:layout_height="70dp"/>
 ```
 * In ProviewMonitoring, we have custom views like `ProviewMonitoringEditText`
 ```
