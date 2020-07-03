@@ -5,4 +5,12 @@
     <string name="question">Question :</string>
     <string name="write_your_answer_here">Write your answer here.</string>
     <string name="submit_answer">Submit Answer</string>
+
+    <string name="exit">Exit</string>
+    <string name="exit_message">Do you really want to exit demo assessment?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="uploading">\"Uploading \"</string>
+    <string name="video_upload_success_message">All videos uploaded successfully and test completed.</string>
+
 </resources>
