@@ -122,7 +122,6 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
      * set upload listeners also.
      */
     private void startYourAssessment() {
-        showQuestions();
         setListenersForProctoring();
         proctorCameraView.startSession(this);
         proctorCameraView.startProctoring();
@@ -135,7 +134,7 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
         proctorCameraView.initializeSession(new ProctorSessionListener() {
             @Override
             public void onProctorSessionStart() {
-                Toast.makeText(SampleAssessmentActivity.this, "Session Started", Toast.LENGTH_SHORT).show();
+                showQuestions();
             }
 
             @Override
@@ -153,8 +152,10 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
         proctorCameraView.setProctorVideoListener(new ProctorVideoUploadListener() {
             @Override
             public void onProctorUploadSuccess() {
-                Toast.makeText(SampleAssessmentActivity.this, R.string.video_upload_success_message, Toast.LENGTH_SHORT).show();
-                finish();
+                runOnUiThread(()->{
+                    Toast.makeText(SampleAssessmentActivity.this, "All videos uploaded successfully and test completed.", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
             }
 
             @Override
