@@ -271,8 +271,8 @@ public class SampleApplication extends Application {
             }
     
             @Override
-            public void onError(@NotNull String message) {
-                Toast.makeText(SampleAssessmentActivity.this, message, Toast.LENGTH_SHORT).show();
+            public void onError(int errorCode, @NotNull String message) {
+                Toast.makeText(SampleAssessmentActivity.this, "Error code : " +errorCode+" "+message, Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
