@@ -1,5 +1,5 @@
-# Proview Integrated Sample Assessment Android App
-Learn to integrate proview-android-sdk and build proctor enabled android application - Sample Project by [Talview](https://www.talview.com/)
+# Proview Integrated sample assessment app for android
+Learn to integrate `proview-android-sdk` and build proctor enabled android application - Sample Project by [Talview](https://www.talview.com/)
 
 ![Android CI](https://github.com/talview/proview-sample-android/workflows/Android%20CI/badge.svg)
 
@@ -9,11 +9,11 @@ Learn to integrate proview-android-sdk and build proctor enabled android applica
 <br>
 
 ## About proview-sample-android project
-This sample project is for developing proctor enabled android assessment applications. Our Team at [Talview](https://www.talview.com/) has build world's first cognitive remote proctoring solution [Proview](https://proview.io/)  
+Proview is an automated cognitive remote proctoring solution powered by [Talview](https://www.talview.com/) that uses advanced video and audio analytics to detect candidate impersonation and suspicious activities during a remote online test. This document explains in detail how to integrate `proview-android-sdk` and build a proctor-enabled android application.
 
 ## Building the project
-* Clone the project, the `develop` branch has the latest code. 
-* This App uses the Proview Token for Proctoring Solution. Get the Proview Token from the Team Talview, connect [email](mailto:us@talview.com) and put that key in the local.properties file in your project:<br>
+* Clone the project, the `master` branch has the latest code. 
+* This App uses the Proview Token for Proctoring Solution. Get the Proview Token from the Team Talview, connect to [Proview Support](https://proviewsupport.freshdesk.com/support/tickets/new) and put your proview token in the local.properties file in your project:<br>
 Your local.properties will like below:
 ```
 sdk.dir=PATH_TO_ANDROID_SDK_ON_YOUR_LOCAL_MACHINE    
@@ -115,6 +115,7 @@ allprojects {
         implementation 'com.google.firebase:firebase-ml-vision-face-model:20.0.1'
     }
     ```
+  Note: `Proview-Android-SDK` features (Face enrollment & verification, Photo id registration and Proctor camera) has dependency on `camera-core` and `camera-camera2` artifact, current version of proview-android-sdk uses `1.0.0-alpha05`, upcoming release of proview-android-sdk will target `1.0.0-beta06` latest version of camera-core and camera-camera2 artifact. 
 * Update your [AndroidManifest.xml](app/src/main/AndroidManifest.xml)
     * Add uses-feature required for `proview-android-sdk`
     ```xml
@@ -154,7 +155,8 @@ public class SampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Proview.init(this);
+        // Proview init function 2nd paramater required BuildConfig.DEBUG type to enable logs
+        Proview.init(this, BuildConfig.DEBUG);
     }
 }
 ``` 
@@ -250,8 +252,7 @@ public class SampleApplication extends Application {
           });
       }
       
-      private void startYourAssessment() {
-        showQuestions();
+      private void startYourAssessment() { 
         setListenersForProctoring();
         proctorCameraView.startSession(this);
         proctorCameraView.startProctoring();
@@ -261,7 +262,7 @@ public class SampleApplication extends Application {
         proctorCameraView.initializeSession(new ProctorSessionListener() {
             @Override
             public void onProctorSessionStart() {
-                Toast.makeText(SampleAssessmentActivity.this, "Session Started", Toast.LENGTH_SHORT).show();
+                showQuestions();
             }
     
             @Override
@@ -279,8 +280,10 @@ public class SampleApplication extends Application {
         proctorCameraView.setProctorVideoListener(new ProctorVideoUploadListener() {
             @Override
             public void onProctorUploadSuccess() {
-                Toast.makeText(SampleAssessmentActivity.this, R.string.video_upload_success_message, Toast.LENGTH_SHORT).show();
-                finish();
+                runOnUiThread(()->{
+                    Toast.makeText(SampleAssessmentActivity.this, "All videos uploaded successfully and test completed.", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
             }
     
             @Override
@@ -323,9 +326,12 @@ Proview Android SDK is a proctoring sdk.
     android:layout_height="wrap_content"/>
 ```
 
-### Find this project useful ? 
+### Find this project useful? 
 
 * Support it by clicking the :star: button on the upper right of this page. :v:
+
+### Feedback
+Your feedback helps make proview-android-sdk better. Please let us know if you discover an issue or have an idea for improving this SDK. Feel free to report [here](https://github.com/talview/proview-sample-android/issues)
 
 ### License
 ```
