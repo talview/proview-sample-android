@@ -28,6 +28,8 @@ android {
             buildConfigField("String", "TALVIEW_PROVIEW_TOKEN", "\"" + localProperties['proviewToken'] + "\"")
         }
         release {
+            buildConfigField("String", "TALVIEW_PROVIEW_TOKEN", "\"" + localProperties['proviewToken'] + "\"")
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
