@@ -68,7 +68,7 @@ allprojects {
     dependencies {
         implementation fileTree(dir: "libs", include: ["*.jar"])
         // proview-android-sdk
-        implementation(name: 'proview-android-sdk', ext: 'aar')
+        implementation(name: 'proview-android-sdk-1.0.0', ext: 'aar')
         // proview-android-sdk dependencies
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
         implementation 'androidx.core:core-ktx:1.3.0'
