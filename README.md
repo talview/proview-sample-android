@@ -21,7 +21,7 @@ proviewToken=YOUR_PROVIEW_TOEKN
 ``` 
 ## Integrate Proview-Android-SDK in your Android application
 * Switch to project view in android studio 
-* Copy [proview-android-sdk.aar](/app/libs/proview-android-sdk.aar) from `/app/libs` and paste it to your app module libs folder.
+* Copy [proview-android-sdk.aar](/app/libs/proview-android-sdk-1.0.0.aar) from `/app/libs` and paste it to your app module libs folder.
 * Update [build.gradle]((build.gradle))(Project: project-name)
 ```gradle
 buildscript {
