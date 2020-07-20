@@ -27,7 +27,7 @@ allprojects {
             url = uri("https://maven.pkg.github.com/talview/proview-android-sdk")
             credentials {
                 username = ""
-                password = localProperties['PAT']
+                password = localProperties['personalAccessToken']
             }
         }
     }
