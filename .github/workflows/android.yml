@@ -19,6 +19,9 @@ jobs:
       - name: Decode TALVIEW_PROVIEW_TOKEN
         run: echo TALVIEW_PROVIEW_TOKEN="FAKETOKEN" > ./local.properties
 
+      - name: Decode TALVIEW_SDK_TOKEN
+        run: echo personalAccessToken = ${{ secrets.SDK_ACCESS_TOKEN }} > ./local.properties
+
       - name: Clean
         run: ./gradlew clean
 
