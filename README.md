@@ -13,8 +13,7 @@ Proview is an automated cognitive remote proctoring solution powered by [Talview
 
 ## Building the project
 * Clone the project, the `master` branch has the latest code. 
-* This App uses the Proview Token and Personal Access Token for Proctoring Solution. Get the Proview Token and Personal Access Token from the Team Talview, connect to [Proview Support](https://proviewsupport.freshdesk.com/support/tickets/new) and put your proview token and personal access token in the local.properties file in sample project:<br>
-local.properties will like below:
+* This app uses a proview token for proctoring and personal access token for accessing proview-android-sdk. if you are an existing proview customer, please reach out to someone in your organization who may already have the proview token and personal access token. if you are a new proview customer, please reach out to the Talview team using [this link](https://proviewsupport.freshdesk.com/support/tickets/new) to get the proview token and personal access token. Once you have the proview token and personal access token, please add it to the `local.properties` file in your project, local.properties will like below:
 ```
 sdk.dir=PATH_TO_ANDROID_SDK_ON_YOUR_LOCAL_MACHINE    
 proviewToken=YOUR_PROVIEW_TOEKN
@@ -76,7 +75,6 @@ allprojects {
         implementation "com.talview.proview:proview-android-sdk:1.0.0-alpha"
     }
     ```
-  Note: `Proview-Android-SDK` features (Face enrollment & verification, Photo id registration and Proctor camera) has dependency on `camera-core` and `camera-camera2` artifact, current version of proview-android-sdk uses `1.0.0-alpha05`, upcoming release of proview-android-sdk will target `1.0.0-beta06` latest version of camera-core and camera-camera2 artifact. 
 * Update your [AndroidManifest.xml](app/src/main/AndroidManifest.xml)
     * Add uses-feature required for `proview-android-sdk`
     ```xml
