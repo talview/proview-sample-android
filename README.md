@@ -13,15 +13,15 @@ Proview is an automated cognitive remote proctoring solution powered by [Talview
 
 ## Building the project
 * Clone the project, the `master` branch has the latest code. 
-* This App uses the Proview Token for Proctoring Solution. Get the Proview Token from the Team Talview, connect to [Proview Support](https://proviewsupport.freshdesk.com/support/tickets/new) and put your proview token in the local.properties file in your project:<br>
-Your local.properties will like below:
+* This App uses the Proview Token and Personal Access Token for Proctoring Solution. Get the Proview Token and Personal Access Token from the Team Talview, connect to [Proview Support](https://proviewsupport.freshdesk.com/support/tickets/new) and put your proview token and personal access token in the local.properties file in sample project:<br>
+local.properties will like below:
 ```
 sdk.dir=PATH_TO_ANDROID_SDK_ON_YOUR_LOCAL_MACHINE    
 proviewToken=YOUR_PROVIEW_TOEKN
+personalAccessToken=YOUR_PERSONAL_ACCESS_TOKEN
 ``` 
 ## Integrate Proview-Android-SDK in your Android application
 * Switch to project view in android studio 
-* Copy [proview-android-sdk.aar](/app/libs/proview-android-sdk-1.0.0.aar) from `/app/libs` and paste it to your app module libs folder.
 * Update [build.gradle](build.gradle)(Project: project-name)
 ```gradle
 buildscript {
@@ -40,8 +40,14 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        flatDir {
-            dir 'libs'
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/talview/proview-android-sdk")
+            credentials {
+                username = ""
+                password = "YOUR_PERSONAL_ACCESS_TOKEN"
+            }
         }
     }
 }
@@ -63,56 +69,11 @@ allprojects {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     ```
-    * Add required dependencies for Proview-Android-SDK  
+    * Add Proview-Android-SDK dependency
     ```gradle
     dependencies {
-        implementation fileTree(dir: "libs", include: ["*.jar"])
         // proview-android-sdk
-        implementation(name: 'proview-android-sdk-1.0.0', ext: 'aar')
-        // proview-android-sdk dependencies
-        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
-        implementation 'androidx.core:core-ktx:1.3.0'
-        implementation 'androidx.fragment:fragment-ktx:1.2.5'
-        implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-        implementation 'androidx.annotation:annotation:1.1.0'
-        implementation 'androidx.appcompat:appcompat:1.1.0'
-        implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-        implementation 'androidx.recyclerview:recyclerview:1.1.0'
-        implementation 'com.google.android.material:material:1.1.0'
-        implementation 'com.github.xujiaji:happy-bubble:1.1.7'
-        implementation 'com.shuhart.stepview:stepview:1.5.1'
-        implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-        implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
-        implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-        implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-        implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0'
-        implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
-        implementation 'androidx.room:room-rxjava2:2.2.5'
-        implementation 'androidx.room:room-runtime:2.2.5'
-        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7'
-        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7'
-        implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.1'
-        implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-        implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-        implementation 'com.github.bumptech.glide:glide:4.11.0'
-        implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-        implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-        implementation 'com.squareup.okhttp3:okhttp:4.7.2'
-        implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
-        implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.7.2'
-        implementation 'com.squareup.okio:okio:2.6.0'
-        implementation 'com.google.code.gson:gson:2.8.6'
-        implementation 'com.commonsware.cwac:saferoom.x:1.2.1'
-        implementation 'joda-time:joda-time:2.10.6'
-        implementation 'org.permissionsdispatcher:permissionsdispatcher:4.5.0'
-        implementation 'com.jakewharton.timber:timber:4.7.1'
-        implementation 'com.facebook.stetho:stetho:1.5.1'
-        implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
-        implementation 'androidx.camera:camera-core:1.0.0-alpha05'
-        implementation 'androidx.camera:camera-camera2:1.0.0-alpha05'
-        implementation 'com.google.firebase:firebase-ml-common:22.1.1'
-        implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
-        implementation 'com.google.firebase:firebase-ml-vision-face-model:20.0.1'
+        implementation "com.talview.proview:proview-android-sdk:1.0.0-alpha"
     }
     ```
   Note: `Proview-Android-SDK` features (Face enrollment & verification, Photo id registration and Proctor camera) has dependency on `camera-core` and `camera-camera2` artifact, current version of proview-android-sdk uses `1.0.0-alpha05`, upcoming release of proview-android-sdk will target `1.0.0-beta06` latest version of camera-core and camera-camera2 artifact. 
