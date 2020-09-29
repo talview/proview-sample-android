@@ -2,6 +2,7 @@
 Learn to integrate `proview-android-sdk` and build proctor enabled android application - Sample Project by [Talview](https://www.talview.com/)
 
 ![Android CI](https://github.com/talview/proview-sample-android/workflows/Android%20CI/badge.svg)
+![Proview-Android-SDK](https://img.shields.io/badge/version-1.0.0-green)
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/11706971/86244322-6b37ec80-bbc5-11ea-84d8-a7ef1066a999.png">
@@ -72,7 +73,7 @@ allprojects {
     ```gradle
     dependencies {
         // proview-android-sdk
-        implementation "com.talview.proview:proview-android-sdk:1.0.0-alpha"
+        implementation "com.talview.proview:proview-android-sdk:1.0.0"
     }
     ```
 * Update your [AndroidManifest.xml](app/src/main/AndroidManifest.xml)
@@ -92,7 +93,6 @@ allprojects {
         package="com.talview.android.proview.sample">
     
         <uses-permission android:name="android.permission.RECORD_AUDIO" />
-        <uses-permission android:name="android.permission.CALL_PHONE" />
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.CAMERA" />
