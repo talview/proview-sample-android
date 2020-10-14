@@ -1,7 +1,7 @@
 package com.talview.android.proview.sample.util;
 
 public class Constants {
-    public static int CANDIDATE_ID = 11973;
-    public static int EXTERNAL_ID = 12341;
-    public static String ASSESSMENT_TITLE = "Sample Assessment";
+    public static String CANDIDATE_ID = "candidateId01";
+    public static String EXTERNAL_ID = "sessionId01";
+    public static String ASSESSMENT_TITLE = "Sample Practice Assessment";
 }
