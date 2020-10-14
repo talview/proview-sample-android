@@ -2,7 +2,7 @@
 Learn to integrate `proview-android-sdk` and build proctor enabled android application - Sample Project by [Talview](https://www.talview.com/)
 
 ![Android CI](https://github.com/talview/proview-sample-android/workflows/Android%20CI/badge.svg)
-![Proview-Android-SDK](https://img.shields.io/badge/version-1.0.0-green)
+![Proview-Android-SDK](https://img.shields.io/badge/version-1.1.0-green)
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/11706971/86244322-6b37ec80-bbc5-11ea-84d8-a7ef1066a999.png">
@@ -73,7 +73,7 @@ allprojects {
     ```gradle
     dependencies {
         // proview-android-sdk
-        implementation "com.talview.proview:proview-android-sdk:1.0.0"
+        implementation "com.talview.proview:proview-android-sdk:1.1.0"
     }
     ```
 * Update your [AndroidManifest.xml](app/src/main/AndroidManifest.xml)
@@ -167,8 +167,8 @@ public class SampleApplication extends Application {
       private void initializeProview() {
           Proview.get().initializePreFlight(
               /*TALVIEW_PROVIEW_TOKEN*/ "PROVIEW_TOKEN",
-              /*CANDIDATE_ID*/ 1001,
-              /*EXTERNAL_ID*/ 9001,
+              /*CANDIDATE_ID*/ "CANDIDATE_ID",
+              /*EXTERNAL_ID*/ "EXTERNAL_ID",
               /*ASSESSMENT_TITLE*/ "Sample Proctor Assessment",
               new PreFlightInitializeCallback() {
                   @Override
