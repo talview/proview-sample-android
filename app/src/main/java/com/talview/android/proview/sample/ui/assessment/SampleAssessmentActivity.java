@@ -68,9 +68,6 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
 
         progressBar.setVisibility(View.VISIBLE);
 
-        // Customized title for video and events capturing notification. [Optional]
-        Proview.setNotificationTitles("Uploading Videos", "Capturing Events.");
-
         // Give unique candidate_id and external_id for uniques session.
         Proview.get().initializePreFlight(
                 BuildConfig.TALVIEW_PROVIEW_TOKEN,
@@ -254,7 +251,7 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
                 .setMessage(getString(R.string.exit_message))
                 .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
 
-                    // abortSession will clear your current session's video, events and session itself.
+                    // abortSession will clear your current session.
                     Proview.get().abortSession(new ProviewAbortSessionListener() {
                         @Override
                         public void onSuccess() {
