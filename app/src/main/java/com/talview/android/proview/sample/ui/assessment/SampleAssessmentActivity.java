@@ -23,13 +23,14 @@ import com.talview.android.proview.sample.util.Constants;
 import com.talview.android.sdk.proview.Proview;
 import com.talview.android.sdk.proview.callbacks.PreFlightCallback;
 import com.talview.android.sdk.proview.callbacks.PreFlightInitializeCallback;
+import com.talview.android.sdk.proview.session.internal.callbacks.ProviewAbortSessionListener;
+import com.talview.android.sdk.proview.session.internal.callbacks.ProviewStartSessionListener;
+import com.talview.android.sdk.proview.session.internal.callbacks.ProviewStopSessionListener;
 import com.talview.android.sdk.proview.view.ProctorCameraView;
-import com.talview.android.sdk.proview.view.listeners.ProctorSessionListener;
+import com.talview.android.sdk.proview.view.listeners.ProctorCameraListener;
 import com.talview.android.sdk.proview.view.listeners.ProctorVideoUploadListener;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Locale;
 
 public class SampleAssessmentActivity extends AppCompatActivity implements QuestionAdapter.QuestionSubmitListener {
 
@@ -59,15 +60,18 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
         questionAdapter = new QuestionAdapter(Question.dummyQuestionList(), this);
     }
 
+
     /**
-     * Step 1 : Initialize proview with candidate and session details.
+     * Step 1 : Initialize Proview session with required details.
      */
     private void initializeProview() {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        //Please give unique candidate_id for candidate profile,
-        // and external id for uniques session.
+        // Customized title for video and events capturing notification. [Optional]
+        Proview.setNotificationTitles("Uploading Videos", "Capturing Events.");
+
+        // Give unique candidate_id and external_id for uniques session.
         Proview.get().initializePreFlight(
                 BuildConfig.TALVIEW_PROVIEW_TOKEN,
                 Constants.CANDIDATE_ID,
@@ -76,7 +80,7 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
                 new PreFlightInitializeCallback() {
                     @Override
                     public void onPreFlightInitialized(@NotNull String sessionId) {
-                        // Save this unique sessionID for this user.
+                        // Save this unique sessionID on your server.
                         startTestWithProviewPreflight();
                     }
 
@@ -91,14 +95,14 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
     }
 
     /**
-     * Step 2 : Start PreFlight for checking candidate hw check etc.
+     * Step 2 : Start PreFlight for checking candidate's phone hardware.
      */
     private void startTestWithProviewPreflight() {
         Proview.get().startPreflight(this, new PreFlightCallback() {
             @Override
             public void onPreFlightComplete() {
-                //Start proctoring and start your assessment.
-                startYourAssessment();
+                // Initialize your ProctorCameraView and start your assessment.
+                initializeProctorCameraView();
             }
 
             @Override
@@ -118,63 +122,77 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
     }
 
     /**
-     * Step 3 : Start your assessment and start proctoring.
-     * set upload listeners also.
+     * Step 3 : First Initialize your [ProctorCameraView] and in onInitializeSuccess callback, start proctoring.
+     * Note - Step 1 and 2 is required to initialize your [ProctorCameraView] otherwise it will throw
+     * error.
      */
-    private void startYourAssessment() {
-        setListenersForProctoring();
-        proctorCameraView.startSession(this);
-        proctorCameraView.startProctoring();
+    private void initializeProctorCameraView() {
+        proctorCameraView.init(this, new ProctorCameraListener() {
+            @Override
+            public void onInitializeSuccess() {
+                // startProctoring session and your assessment to capture events.
+                startProctorSessionAndAssessment();
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                Toast.makeText(SampleAssessmentActivity.this, "ProviewCameraView Init OnError Code " + errorCode, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     /**
-     * Set Listeners on proctorCameraView only initializing the proview session which it STEP -1 ;
+     * Step 4 : Start session and in onSuccess callback startProctoring to capture all events.
      */
-    private void setListenersForProctoring() {
-        proctorCameraView.initializeSession(new ProctorSessionListener() {
+    private void startProctorSessionAndAssessment() {
+
+        // starting the session and proctoring.
+        Proview.get().startSession(new ProviewStartSessionListener() {
             @Override
-            public void onProctorSessionStart() {
-                showQuestions();
+            public void onSuccess() {
+                proctorCameraView.startProctoring();
+                startYourAssessment();
             }
 
             @Override
-            public void onProctorSessionStop() {
-                Toast.makeText(SampleAssessmentActivity.this, "Session Stopped", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(int errorCode, @NotNull String message) {
-                Toast.makeText(SampleAssessmentActivity.this, "Error code : " +errorCode+" "+message, Toast.LENGTH_SHORT).show();
+            public void onFailure(int errorCode) {
+                Toast.makeText(SampleAssessmentActivity.this, "OnStartSession Failure ErrorCode : " + errorCode, Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
 
-        proctorCameraView.setProctorVideoListener(new ProctorVideoUploadListener() {
+        // [Optional but recommended] to show video upload progress to user at the end of your assessment.
+        // so user can wait till the gets uploaded.
+        Proview.get().listenForVideoUploads(new ProctorVideoUploadListener() {
+
             @Override
-            public void onProctorUploadSuccess() {
-                runOnUiThread(()->{
-                    Toast.makeText(SampleAssessmentActivity.this, "All videos uploaded successfully and test completed.", Toast.LENGTH_SHORT).show();
-                    finish();
+            public void onSessionComplete() {
+                runOnUiThread(() -> {
+                    Toast.makeText(SampleAssessmentActivity.this, "Video Uploaded and Session Completed successfully.", Toast.LENGTH_SHORT).show();
                 });
+                finish();
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                runOnUiThread(() -> {
+                    Toast.makeText(SampleAssessmentActivity.this, "CurrentSessionVideoProgress OnFailure ErrorCode " + errorCode, Toast.LENGTH_SHORT).show();
+                });
+                finish();
             }
 
             @Override
             public void uploadProgress(int progress) {
-                //TODO: need to remove runOnUiThread.
+                // Upload progress callback.
                 runOnUiThread(() -> {
-                    uploadPercentageTextView.setVisibility(View.VISIBLE);
-                    uploadPercentageTextView.setText(String.format(Locale.ENGLISH, "%s%d%%", getString(R.string.uploading), progress));
+                    uploadPercentageTextView.setText("Uploading " + progress + "%");
                 });
-            }
-
-            @Override
-            public void uploadStarted() {
-                // Empty method
             }
         });
     }
 
-    private void showQuestions() {
+    private void startYourAssessment() {
         questionRecyclerView.setAdapter(questionAdapter);
         progressBar.setVisibility(View.GONE);
         uploadPercentageTextView.setVisibility(View.GONE);
@@ -183,31 +201,39 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
     }
 
     /**
-     * Assessment Question Answer Submit Callback
-     * checks for last Question or End of Assessment to stop {@link ProctorCameraView} session and
-     * Show proctored video upload progress
+     * If you reach at end of the your assessment, call stopProctoring and stopSession to stop capturing
+     * proview related events and videos.
      */
     @Override
     public void onAnswerSubmit(Question question, boolean isLastQuestion, int position) {
         if (isLastQuestion) {
-            // Stop session
-            proctorCameraView.stopSession();
+            // stop proctoring and session at the end of the assessment.
+            proctorCameraView.stopProctoring();
 
-            // Show uploading progress
-            showUploadProgressScreen();
+            Proview.get().stopSession(new ProviewStopSessionListener() {
+                @Override
+                public void onSuccess() {
+                    // [Optional but recommended] to show video upload progress to user at the end of your assessment.
+                    showUploadProgressScreen();
+                }
+
+                @Override
+                public void onFailure(int errorCode) {
+                    Toast.makeText(SampleAssessmentActivity.this, "ProviewStop OnFailure ErrorCode " + errorCode, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
         } else {
             questionRecyclerView.getLayoutManager().scrollToPosition(position + 1);
         }
     }
 
-    /**
-     * Show proctored video upload progress status
-     */
     public void showUploadProgressScreen() {
         progressBar.setVisibility(View.GONE);
         questionRecyclerView.setVisibility(View.GONE);
         uploadPercentageTextView.setVisibility(View.GONE);
         proctorCameraView.setVisibility(View.GONE);
+        uploadPercentageTextView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -220,15 +246,26 @@ public class SampleAssessmentActivity extends AppCompatActivity implements Quest
         context.startActivity(intent);
     }
 
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.exit))
                 .setMessage(getString(R.string.exit_message))
                 .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-                    // stop session
-                    proctorCameraView.stopSession();
-                    finish();
+
+                    // abortSession will clear your current session's video, events and session itself.
+                    Proview.get().abortSession(new ProviewAbortSessionListener() {
+                        @Override
+                        public void onSuccess() {
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(int errorCode) {
+                            Toast.makeText(SampleAssessmentActivity.this, "OnAbort Failure ErrorCode " + errorCode, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 })
                 .setNegativeButton(getString(R.string.cancel), ((dialog, which) -> {
                     dialog.cancel();

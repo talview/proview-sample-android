@@ -9,6 +9,8 @@ public class SampleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Initialize your Proview in Application class.
         Proview.init(this, BuildConfig.DEBUG);
     }
 }
