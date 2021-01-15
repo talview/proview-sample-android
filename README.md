@@ -2,7 +2,7 @@
 Learn to integrate `proview-android-sdk` and build proctor enabled android application - Sample Project by [Talview](https://www.talview.com/)
 
 ![Android CI](https://github.com/talview/proview-sample-android/workflows/Android%20CI/badge.svg)
-![Proview-Android-SDK](https://img.shields.io/badge/version-1.1.1-green)
+![Proview-Android-SDK](https://img.shields.io/badge/version-1.1.2-green)
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/11706971/86244322-6b37ec80-bbc5-11ea-84d8-a7ef1066a999.png">
@@ -59,7 +59,6 @@ allprojects {
         minSdkVersion 21
         targetSdkVersion 29
         ...
-        vectorDrawables.useSupportLibrary = true
     }
     ```
     * Add compile options
@@ -73,7 +72,7 @@ allprojects {
     ```gradle
     dependencies {
         // proview-android-sdk
-        implementation "com.talview.proview:proview-android-sdk:1.1.1"
+        implementation "com.talview.proview:proview-android-sdk:1.1.2"
     }
     ```
 * Update your [AndroidManifest.xml](app/src/main/AndroidManifest.xml)
@@ -289,6 +288,30 @@ public class SampleApplication extends Application {
           uploadPercentageTextView.setVisibility(View.GONE);
           questionRecyclerView.setVisibility(View.VISIBLE);
           proctorCameraView.setVisibility(View.VISIBLE);
+       }
+
+
+       // stop proctoring and session at the end of the assessment.
+       public void onAnswerSubmit(Question question, boolean isLastQuestion, int position) {
+          if (isLastQuestion) {
+              proctorCameraView.stopProctoring();
+
+              Proview.get().stopSession(new ProviewStopSessionListener() {
+                  @Override
+                  public void onSuccess() {
+                      // [Optional but recommended] to show video upload progress to user at the end of your assessment.
+                      showUploadProgressScreen();
+                  }
+
+                  @Override
+                  public void onFailure(int errorCode) {
+                      Toast.makeText(SampleAssessmentActivity.this, "ProviewStop OnFailure ErrorCode " + errorCode, Toast.LENGTH_SHORT).show();
+                      finish();
+                  }
+              });
+          } else {
+              questionRecyclerView.getLayoutManager().scrollToPosition(position + 1);
+          }
        }
 
        // [Optional] abortSession onBackpress to clear current session.
